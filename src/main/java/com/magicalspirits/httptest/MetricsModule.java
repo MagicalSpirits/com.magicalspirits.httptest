@@ -18,21 +18,13 @@ import com.codahale.metrics.jvm.FileDescriptorRatioGauge;
 import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
+import com.palominolabs.metrics.guice.InstrumentationModule;
 
 @Slf4j
-public class MetricsModule extends AbstractModule 
+public class MetricsModule extends InstrumentationModule 
 {
 	@Override
-	protected void configure() 
-	{
-	}
-
-	@Provides
-	@Singleton
-	public MetricRegistry getMetricRegistry()
+	protected MetricRegistry createMetricRegistry()
 	{
 		MetricRegistry mr = new MetricRegistry();
 
@@ -44,24 +36,24 @@ public class MetricsModule extends AbstractModule
 		registerAll("jvm.memory", new MemoryUsageGaugeSet(), mr);
 		registerAll("jvm.threads", new ThreadStatesGaugeSet(), mr);
 		register("jvm.fileDescriptorCountRatio", new FileDescriptorRatioGauge(), mr);
-		
+
 		mr.registerAll(new JvmAttributeGaugeSet());
-		
+
 		Slf4jReporter reporter = Slf4jReporter.forRegistry(mr)
 				.outputTo(LoggerFactory.getLogger("com.magicalspirits.httptest.metrics"))
 				.convertRatesTo(TimeUnit.SECONDS)
 				.convertDurationsTo(TimeUnit.MILLISECONDS).build();
-		
+
 		reporter.start(15, TimeUnit.SECONDS);
 		return mr;
 	}
-	
+
 	private void registerAll(String prefix, MetricSet ms, MetricRegistry mr) 
 	{
 		for (Map.Entry<String, Metric> entry : ms.getMetrics().entrySet()) 
 		{
 			String name = MetricRegistry.name(prefix, entry.getKey());
-			
+
 			if (entry.getValue() instanceof MetricSet) 
 			{
 				registerAll(name, (MetricSet) entry.getValue(), mr);
