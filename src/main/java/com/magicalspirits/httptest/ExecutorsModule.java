@@ -42,6 +42,13 @@ public class ExecutorsModule extends AbstractModule
 		return getService(HTTP_SERVER_POOL, registry, uncaughtExceptionHandler);
 	}
 	
+	@Provides
+	@Singleton
+	public UncaughtExceptionHandler getUncaughtExceptionHandler(LoggingUncaughtExceptionHandler internal)
+	{
+		return internal;
+	}
+	
 	private InstrumentedExecutorService getService(String poolName, MetricRegistry registry, UncaughtExceptionHandler uncaughtExceptionHandler)
 	{
 		ExecutorService es = Executors.newCachedThreadPool(
