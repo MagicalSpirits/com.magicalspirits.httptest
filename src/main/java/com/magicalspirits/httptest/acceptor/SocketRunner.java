@@ -1,11 +1,8 @@
 package com.magicalspirits.httptest.acceptor;
 
-public class SocketRunner implements Runnable 
+import java.net.Socket;
+
+public interface SocketRunner extends Runnable 
 {
-	@Override
-	public void run() 
-	{
-
-	}
-
+	public void setSocket(Socket socket);
 }

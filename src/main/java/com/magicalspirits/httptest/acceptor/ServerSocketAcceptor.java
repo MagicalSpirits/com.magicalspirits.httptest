@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Supplier;
 
 import javax.annotation.PreDestroy;
 
@@ -11,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.name.Named;
 import com.magicalspirits.httptest.ExecutorsModule;
 
@@ -33,10 +33,8 @@ public class ServerSocketAcceptor implements Runnable
 	@Named(ExecutorsModule.HTTP_SERVER_POOL)
 	private ExecutorService serverPool;
 
-	//It's not always a great thing to inject the injector, however in this case,
-	//we need to new up a new objectgraph per socket accept.
 	@Inject
-	private Injector injector;
+	private Supplier<SocketRunner> socketRunnerSupplier;
 	
 	@Override
 	public void run() 
@@ -46,7 +44,8 @@ public class ServerSocketAcceptor implements Runnable
 			while(running)
 			{
 				Socket s = listeningSocket.accept();
-				SocketRunner sr = injector.getInstance(SocketRunner.class);
+				SocketRunner sr = socketRunnerSupplier.get();
+				sr.setSocket(s);
 				serverPool.submit(sr);
 			}
 		}
@@ -60,6 +59,8 @@ public class ServerSocketAcceptor implements Runnable
 			{
 				//we're here because an exception has occurred. We want to re-add this to the system pool, 
 				//but let the exception flow out to the registered uncaught exception handler
+				//this might cause unlimited errors over and over again, however the counter risk is that
+				//we stop executing something we should be handling....
 				serverPool.submit(this);
 			}
 		}
