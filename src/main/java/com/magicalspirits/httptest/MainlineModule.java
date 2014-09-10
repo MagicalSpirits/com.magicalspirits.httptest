@@ -14,7 +14,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import com.magicalspirits.httptest.acceptor.AcceptorService;
 import com.magicalspirits.httptest.acceptor.ServerSocketAcceptor;
 import com.magicalspirits.httptest.acceptor.SocketRunner;

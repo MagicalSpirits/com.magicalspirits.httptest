@@ -3,12 +3,10 @@ package com.magicalspirits.httptest;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
 
 import com.codahale.metrics.MetricRegistry;
-import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
