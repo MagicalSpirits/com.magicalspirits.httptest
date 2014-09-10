@@ -88,14 +88,7 @@ public class TestlineModule extends AbstractModule
 	{
 		return mmm.getAcceptors(ss1, ss2);
 	}
-	
-	@Provides
-	@Named(ExecutorsModule.SHUTDOWN_TIME_SECONDS)
-	@Singleton
-	public int getShutdownInSeconds()
-	{
-		return 1;
-	}
+
 	
 	@Provides
 	@Singleton

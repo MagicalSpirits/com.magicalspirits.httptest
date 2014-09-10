@@ -23,10 +23,11 @@ public class Main
 			System.out.println("Type exit and press enter to end process");
 			if(s.hasNext() && "exit".equalsIgnoreCase(s.next()))
 			{
+				System.out.println("Shutting down.");
 				main.stop();
+				System.out.println("Shutdown complete.");
 				break;
 			}
 		}
 	}
-
 }

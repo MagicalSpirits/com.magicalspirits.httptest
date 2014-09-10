@@ -88,14 +88,6 @@ public class MainlineModule extends AbstractModule
 	}
 	
 	@Provides
-	@Named(ExecutorsModule.SHUTDOWN_TIME_SECONDS)
-	@Singleton
-	public int getShutdownInSeconds()
-	{
-		return 30;
-	}
-	
-	@Provides
 	@Singleton
 	public Map<String, String> getMimeTypeRegistry()
 	{
