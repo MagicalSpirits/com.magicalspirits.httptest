@@ -3,8 +3,8 @@ package com.magicalspirits.httptest.httpparser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
@@ -55,6 +55,12 @@ public class HttpRuriParser implements SocketRunner
 			{
 				rUriLine = bufferedReader.readLine();
 			} 
+			catch(SocketTimeoutException ste)
+			{
+				log.warn("Timeout reading ruri line for {}", socket);
+				socket.close();
+				return;
+			}
 			catch (IOException e) 
 			{
 				log.warn("Unable to read ruri line for {}", socket, e);

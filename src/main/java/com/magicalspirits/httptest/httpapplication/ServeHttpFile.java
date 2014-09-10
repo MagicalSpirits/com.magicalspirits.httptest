@@ -2,9 +2,12 @@ package com.magicalspirits.httptest.httpapplication;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
@@ -15,9 +18,12 @@ import java.util.function.Supplier;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
+import com.codahale.metrics.health.HealthCheckRegistry;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.io.ByteStreams;
@@ -52,7 +58,19 @@ public class ServeHttpFile implements ApplicationRunner
 	private ExecutorService serverPool;
 
 	@Inject
+	private ExecutorService defaultPool;
+
+	@Inject
 	private Supplier<SocketRunner> socketRunnerSupplier;
+	
+	@Inject 
+	private ObjectMapper mapper; //for metrics and monitoring.
+	
+	@Inject
+	private HealthCheckRegistry healthRegistry;
+	
+	@Inject 
+	private MetricRegistry metricRegistry;
 	
 	private OutputStream out;
 	private PrintStream ps;
@@ -93,6 +111,24 @@ public class ServeHttpFile implements ApplicationRunner
 			//Note: The root directory in a production environment would come dependency injection rather than a classpath resource.
 			// This is good enough for this demo.
 			
+			//Note: Here we would probably use a list of some path matching to the actual class that produces the result, however
+			// since I'm only adding metrics and monitoring, I'm not going to be that dynamic about it.
+			
+			if("/metrics".equals(httpRuri.getRuriPath()))
+			{
+				writeMetrics();
+				finish();
+				return;
+			}
+			if("/monitoring".equals(httpRuri.getRuriPath()))
+			{
+				writeMonitoring();
+				finish();
+				return;
+			}
+			
+			//otherwise, look for a file
+			
 			File file = new File(ServeHttpFile.class.getClassLoader().getResource("wwwroot").getFile() + httpRuri.getRuriPath());
 			//Note: Default behavior of an empty url would be to have it try an index.html. That's not in this demo, but wouldn't be
 			//hard to check for here and add.
@@ -132,14 +168,49 @@ public class ServeHttpFile implements ApplicationRunner
 		}
 	}
 	
+	private void writeMetrics() throws IOException
+	{
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		//I have to wrap this in a byte array outputstream since I dont know the size, and I
+		// dont support chunked encoding.
+		mapper.writerWithDefaultPrettyPrinter().writeValue(baos, metricRegistry);
+
+		writeResult(200, "OK", "txt", baos.size(), new ByteArrayInputStream(baos.toByteArray()));
+	}
+	
+	private void writeMonitoring() throws IOException
+	{
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		//I have to wrap this in a byte array outputstream since I dont know the size, and I
+		// dont support chunked encoding.
+		mapper.writerWithDefaultPrettyPrinter().writeValue(baos, healthRegistry.runHealthChecks(defaultPool));
+
+		writeResult(200, "OK", "txt", baos.size(), new ByteArrayInputStream(baos.toByteArray()));
+	}
+
 	private void writeResult(int responseCode, String httpMessage, File file) throws IOException 
 	{
-		ps.println(httpRuri.getVersion() + " " + responseCode + " " + httpMessage);
-		ps.println(HttpHeaders.CONTENT_LENGTH + ": " + file.length());
-		
-		//bin is a great default.
-		String mimeType = mimeTypeRegistry.get("");
 		String ext = Files.getFileExtension(file.getName());
+		try(FileInputStream fis = new FileInputStream(file))
+		{
+			writeResult(responseCode, httpMessage, ext, file.length(), fis);
+		}
+	}
+
+	private void writeResult(int responseCode, String httpMessage, String ext, long length, InputStream in) throws IOException 
+	{
+		writeResultHeader(responseCode, httpMessage, ext, length);
+		ByteStreams.copy(in, out);
+		out.flush();
+	}
+	
+	private void writeResultHeader(int responseCode, String httpMessage, String ext, long length) throws IOException 
+	{
+		ps.println(httpRuri.getVersion() + " " + responseCode + " " + httpMessage);
+		ps.println(HttpHeaders.CONTENT_LENGTH + ": " + length);
+		
+		//"" is a great default.
+		String mimeType = mimeTypeRegistry.get("");
 		if(!Strings.isNullOrEmpty(ext) && mimeTypeRegistry.containsKey(ext))
 			mimeType = mimeTypeRegistry.get(ext);
 		
@@ -147,12 +218,6 @@ public class ServeHttpFile implements ApplicationRunner
 		
 		ps.println();
 		ps.flush();
-		
-		try(FileInputStream fis = new FileInputStream(file))
-		{
-			ByteStreams.copy(fis, out);
-		}
-		out.flush();
 	}
 
 	@Metered(name="finish.meter")
