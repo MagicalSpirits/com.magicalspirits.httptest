@@ -27,6 +27,7 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.inject.Guice;
 import com.magicalspirits.httptest.acceptor.SocketRunner;
+import com.magicalspirits.httptest.httpapplication.ServeHttpFile;
 import com.mycila.guice.ext.closeable.CloseableInjector;
 import com.mycila.guice.ext.closeable.CloseableModule;
 import com.mycila.guice.ext.jsr250.Jsr250Module;
@@ -43,7 +44,7 @@ public class TestAcceptor
 	{
 		i = Guice.createInjector(
 				new CloseableModule(), new Jsr250Module(), new ExecutorsModule(), 
-				new MetricsModule(), new TestlineModule(SocketAcceptorTestImpl.class))
+				new MetricsModule(), new TestlineModule(SocketAcceptorTestImpl.class, ServeHttpFile.class))
 					.getInstance(CloseableInjector.class);
 		
 		port = i.getInstance(ServerSocket.class).getLocalPort();

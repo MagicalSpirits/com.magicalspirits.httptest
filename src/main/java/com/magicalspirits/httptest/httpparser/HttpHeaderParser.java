@@ -42,7 +42,7 @@ public class HttpHeaderParser implements SocketRunner
 		ArrayListMultimap<String, String> httpHeaders = ArrayListMultimap.create();
 		try
 		{
-			for(String header = bufferedReader.readLine(); Strings.isNullOrEmpty(header); header = bufferedReader.readLine())
+			for(String header = bufferedReader.readLine(); !Strings.isNullOrEmpty(header); header = bufferedReader.readLine())
 			{
 				parseHeader(header, httpHeaders);
 			}
@@ -60,7 +60,7 @@ public class HttpHeaderParser implements SocketRunner
 		defaultPool.execute(runner);
 	}
 	
-	public void parseHeader(String header, Multimap<String, String> httpHeaders)
+	private void parseHeader(String header, Multimap<String, String> httpHeaders)
 	{
 		int indexOfColon = header.indexOf(":");
 		if(indexOfColon == -1)

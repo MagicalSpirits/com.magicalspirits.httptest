@@ -18,7 +18,6 @@ import com.magicalspirits.httptest.acceptor.AcceptorService;
 import com.magicalspirits.httptest.acceptor.ServerSocketAcceptor;
 import com.magicalspirits.httptest.acceptor.SocketRunner;
 import com.magicalspirits.httptest.httpapplication.ApplicationRunner;
-import com.magicalspirits.httptest.httpapplication.ServeHttpFile;
 import com.magicalspirits.httptest.httpparser.HttpHeaderParser;
 
 @Slf4j
@@ -27,12 +26,14 @@ public class TestlineModule extends AbstractModule
 {
 	private Class<? extends SocketRunner> socketRunner;
 	
+	private Class<? extends ApplicationRunner> applicationRunner;
+	
 	@Override
 	protected void configure() 
 	{
 		bind(SocketRunner.class).to(socketRunner);
 		bind(AcceptorService.class).asEagerSingleton();
-		bind(ApplicationRunner.class).to(ServeHttpFile.class);
+		bind(ApplicationRunner.class).to(applicationRunner);
 	}
 	
 	/**

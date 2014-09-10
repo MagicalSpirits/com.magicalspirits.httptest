@@ -86,7 +86,7 @@ public class HttpRuriParser implements SocketRunner
 			parser.setBufferedReader(bufferedReader);
 			parser.setSocket(socket);
 			parser.setHttpRuri(data);
-			
+			serverPool.execute(parser);
 		}
 		catch(IOException e)
 		{

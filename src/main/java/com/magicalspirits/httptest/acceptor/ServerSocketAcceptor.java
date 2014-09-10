@@ -51,6 +51,7 @@ public class ServerSocketAcceptor implements Runnable
 			while(running && !serverPool.isShutdown())
 			{
 				Socket s = listeningSocket.accept();
+				s.setSoTimeout(10000); //Note: This should probably be an injected config variable, or a system property. Hardcoding for this demo.
 				SocketRunner sr = socketRunnerSupplier.get();
 				sr.setSocket(s);
 				//ISO 8859-1 is somehow the RFC defined encoding for the http body.
