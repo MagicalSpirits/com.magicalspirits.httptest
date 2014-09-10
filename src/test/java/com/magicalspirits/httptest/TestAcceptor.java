@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -69,9 +68,9 @@ public class TestAcceptor
 		}
 	}
 
-	@Test(timeout=1000)
+	@Test(timeout=300) //300ms should be plenty. Test takes 0.04 secdonds on my mac. Your results may vary
 	@SneakyThrows
-	public void testOneHundredAccepts()
+	public void testOneHundredAccepts() //this is almost simultaneous, and is about all the IP stack on my mac can handle without tuning
 	{
 		List<Callable<Optional<Exception>>> callables = Lists.newArrayList();
 		
@@ -111,7 +110,6 @@ public class TestAcceptor
 				throw result.get();
 		}
 	}
-
 	
 	public static class SocketAcceptorTestImpl implements SocketRunner
 	{

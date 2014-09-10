@@ -1,6 +1,5 @@
 package com.magicalspirits.httptest.acceptor;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -15,7 +14,8 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.magicalspirits.httptest.ExecutorsModule;
 
-@AllArgsConstructor @NoArgsConstructor
+@AllArgsConstructor 
+@NoArgsConstructor
 public class ServerSocketAcceptor implements Runnable
 {
 	private boolean running = true;
@@ -45,7 +45,7 @@ public class ServerSocketAcceptor implements Runnable
 		this.executing = Thread.currentThread();
 		try
 		{
-			while(running)
+			while(running && !serverPool.isShutdown())
 			{
 				Socket s = listeningSocket.accept();
 				SocketRunner sr = socketRunnerSupplier.get();
@@ -53,13 +53,9 @@ public class ServerSocketAcceptor implements Runnable
 				serverPool.submit(sr);
 			}
 		}
-		catch (IOException e) 
+		catch (Exception e) 
 		{
-			throw new RuntimeException(e); //send it to the registered uncaught exception handler 
-		}
-		finally
-		{
-			if(running)
+			if(running && !serverPool.isShutdown())
 			{
 				//we're here because an exception has occurred. We want to re-add this to the system pool, 
 				//but let the exception flow out to the registered uncaught exception handler
@@ -67,6 +63,8 @@ public class ServerSocketAcceptor implements Runnable
 				//we stop executing something we should be handling....
 				serverPool.submit(this);
 			}
+			if(running || !(running && e instanceof InterruptedException))
+				throw new RuntimeException(e); //send it to the registered uncaught exception handler 
 		}
 	}
 }
