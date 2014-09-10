@@ -9,9 +9,17 @@ com.magicalspirits.httptest.launcher.Service is a jsvc capable service, if you w
 
 This http server will serve files out of a resource called wwwroot. Typically, if you build this in eclipse, you will find the source files in src/main/resources/wwwroot
 
+This server will listen on http://localhost:8080
+
 Additionally to serving of static content, this server has two additional urls bound:
-* /monitoring shows bound codahale health check services. Presently, only the jvm deadlock detector is bound.
-* /metrics shows bound metrics. This application is providing many of these, and the JVM is also providing many more. You can use this to see what this http server is doing on the inside.
+* http://localhost:8080/monitoring shows bound codahale health check services. Presently, only the jvm deadlock detector is bound.
+* http://localhost:8080/metrics shows bound metrics. This application is providing many of these, and the JVM is also providing many more. You can use this to see what this http server is doing on the inside.
+
+A couple of pieces of sample content are included for testing:
+* http://localhost:8080/testfile1.txt a sample text file
+* http://localhost:8080/simple.html a sample html file
+* http://localhost:8080/binarydata.bin a sample binary file
+These files will each download with an appropriate mime type.
 
 High level system design:
 ---------------------------------
