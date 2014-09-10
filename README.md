@@ -42,6 +42,7 @@ Use dependency injection (Guice) to enable portions to be swapped in potential d
 Provide metrics and monitoring (Codahale) so that this service could be used in a production capacity.
 Provide high throughput request processing. On my macbook, I can execute 1000 requests in less than a second.
 Provide robust unit testing.
+Provide automated system level testing.
 Provide a minimum viable product http server.
 
 
