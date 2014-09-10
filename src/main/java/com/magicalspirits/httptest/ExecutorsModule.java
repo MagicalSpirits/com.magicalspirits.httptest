@@ -5,10 +5,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PreDestroy;
+
 import com.codahale.metrics.MetricRegistry;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
@@ -22,6 +25,7 @@ public class ExecutorsModule extends AbstractModule
 	@Override
 	protected void configure() 
 	{
+		bind(ExecutorsService.class).asEagerSingleton();
 	}
 	
 	@Provides
@@ -58,5 +62,24 @@ public class ExecutorsModule extends AbstractModule
 					.setUncaughtExceptionHandler(uncaughtExceptionHandler).build());
 		MoreExecutors.addDelayedShutdownHook(es, shutdownInSeconds, TimeUnit.SECONDS);
 		return new InstrumentedExecutorService(es, registry);	
+	}
+	
+	public static class ExecutorsService
+	{
+		@Inject
+		@Named(ExecutorsModule.HTTP_SERVER_POOL)
+		private ExecutorService serverPool;
+		
+		@Inject
+		private ExecutorService defaultPool;
+		
+		
+		@PreDestroy
+		public void shutdown()
+		{
+			//shutdwn the pools to prevent future work from happening on this instance.
+			serverPool.shutdown();
+			defaultPool.shutdown();
+		}
 	}
 }

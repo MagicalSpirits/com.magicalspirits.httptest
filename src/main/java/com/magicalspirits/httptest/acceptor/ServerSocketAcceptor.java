@@ -1,5 +1,7 @@
 package com.magicalspirits.httptest.acceptor;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -10,6 +12,7 @@ import javax.annotation.PreDestroy;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.magicalspirits.httptest.ExecutorsModule;
@@ -50,6 +53,7 @@ public class ServerSocketAcceptor implements Runnable
 				Socket s = listeningSocket.accept();
 				SocketRunner sr = socketRunnerSupplier.get();
 				sr.setSocket(s);
+				sr.setBufferedReader(new BufferedReader(new InputStreamReader(s.getInputStream(), Charsets.UTF_8)));
 				serverPool.submit(sr);
 			}
 		}
@@ -57,9 +61,9 @@ public class ServerSocketAcceptor implements Runnable
 		{
 			if(running && !serverPool.isShutdown())
 			{
-				//we're here because an exception has occurred. We want to re-add this to the system pool, 
+				//we're here because an exception has occurred. I want to re-add this to the system pool, 
 				//but let the exception flow out to the registered uncaught exception handler
-				//this might cause unlimited errors over and over again, however the counter risk is that
+				//this might cause unlimited errors over and over again, however the alternate risk is that
 				//we stop executing something we should be handling....
 				serverPool.submit(this);
 			}

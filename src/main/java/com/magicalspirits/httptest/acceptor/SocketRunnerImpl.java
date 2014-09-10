@@ -1,13 +1,18 @@
 package com.magicalspirits.httptest.acceptor;
 
+import java.io.BufferedReader;
 import java.net.Socket;
 
 import lombok.Setter;
 
-public class SocketRunnerImpl  implements SocketRunner
+public class SocketRunnerImpl implements SocketRunner
 {
 	@Setter(onMethod=@__(@Override))
 	private Socket socket;
+	
+	@Setter(onMethod=@__(@Override))
+	private BufferedReader bufferedReader;
+	
 	
 	@Override
 	public void run()

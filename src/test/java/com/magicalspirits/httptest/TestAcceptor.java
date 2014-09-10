@@ -127,6 +127,9 @@ public class TestAcceptor
 		@Setter(onMethod=@__(@Override))
 		private Socket socket;
 
+		@Setter(onMethod=@__(@Override))
+		private BufferedReader bufferedReader;
+		
 		@Getter
 		private String text;
 
@@ -140,8 +143,7 @@ public class TestAcceptor
 		public void run() 
 		{
 			this.run = true;
-			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), Charsets.UTF_8));
-			text = br.readLine();
+			text = bufferedReader.readLine();
 			
 			PrintStream ps = new PrintStream(socket.getOutputStream(), true);
 			if(text.equalsIgnoreCase(PING))
