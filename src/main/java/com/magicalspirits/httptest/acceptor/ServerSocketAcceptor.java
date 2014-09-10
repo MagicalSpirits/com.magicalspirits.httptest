@@ -53,7 +53,8 @@ public class ServerSocketAcceptor implements Runnable
 				Socket s = listeningSocket.accept();
 				SocketRunner sr = socketRunnerSupplier.get();
 				sr.setSocket(s);
-				sr.setBufferedReader(new BufferedReader(new InputStreamReader(s.getInputStream(), Charsets.UTF_8)));
+				//ISO 8859-1 is somehow the RFC defined encoding for the http body.
+				sr.setBufferedReader(new BufferedReader(new InputStreamReader(s.getInputStream(), Charsets.ISO_8859_1)));
 				serverPool.submit(sr);
 			}
 		}

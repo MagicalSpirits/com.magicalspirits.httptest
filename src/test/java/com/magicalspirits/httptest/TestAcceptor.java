@@ -58,7 +58,7 @@ public class TestAcceptor
 		{
 			PrintStream ps = new PrintStream(s.getOutputStream(), true);
 			ps.println(SocketAcceptorTestImpl.PING);
-			BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream(), Charsets.UTF_8));
+			BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream(), Charsets.ISO_8859_1));
 
 			String text = br.readLine();
 			
@@ -82,7 +82,7 @@ public class TestAcceptor
 				{
 					PrintStream ps = new PrintStream(s.getOutputStream(), true);
 					ps.println(SocketAcceptorTestImpl.PING);
-					BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream(), Charsets.UTF_8));
+					BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream(), Charsets.ISO_8859_1));
 		
 					String text = br.readLine();
 					
