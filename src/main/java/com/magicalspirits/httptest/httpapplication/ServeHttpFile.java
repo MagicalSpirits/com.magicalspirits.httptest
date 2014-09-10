@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
@@ -242,13 +243,40 @@ public class ServeHttpFile implements ApplicationRunner
 			}
 			throw new RuntimeException(e);			
 		}
+		
+		
 		if(httpRuri.getVersion().equalsIgnoreCase("HTTP/1.1") && !socket.isClosed())
 		{
-			//reschedule this 
-			SocketRunner sr = socketRunnerSupplier.get();
-			sr.setBufferedReader(bufferedReader);
-			sr.setSocket(socket);
-			serverPool.execute(sr);
+			boolean closeRequired = false;
+			
+			List<String> closed = headers.get(HttpHeaders.CONNECTION);
+			for(String closeValue : closed)
+			{
+				if("closed".equalsIgnoreCase(closeValue))
+				{
+					closeRequired = true;
+					break;
+				}
+			}
+			if(closeRequired)
+			{
+				try
+				{
+					socket.close();
+				} 
+				catch (IOException e1) 
+				{
+					log.warn("Unable to close socket", e1);
+				}
+			}
+			else
+			{
+				//reschedule this 
+				SocketRunner sr = socketRunnerSupplier.get();
+				sr.setBufferedReader(bufferedReader);
+				sr.setSocket(socket);
+				serverPool.execute(sr);
+			}
 		}
 		else
 		{

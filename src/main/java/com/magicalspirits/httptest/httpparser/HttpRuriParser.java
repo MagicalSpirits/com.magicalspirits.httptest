@@ -17,7 +17,6 @@ import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.magicalspirits.httptest.ExecutorsModule;
@@ -42,6 +41,8 @@ public class HttpRuriParser implements SocketRunner
 	@Inject
 	private Supplier<HttpHeaderParser> httpHeaderParserSupplier;
 	
+	private static final int MAX_EMPTY_LINES_BEFORE_RURI = 10;
+	
 	@Override
 	@Metered(name="run.meter")
 	@Timed(name="run.timed")
@@ -50,10 +51,20 @@ public class HttpRuriParser implements SocketRunner
 	{
 		try
 		{
-			String rUriLine;
+			String rUriLine = "";
 			try 
 			{
-				rUriLine = bufferedReader.readLine();
+				//some clients are sloppy, especially with http 1.1 handling.
+				//We'll give them a little leeway with empty lines at the beginning.
+				for(int i = 0; i < MAX_EMPTY_LINES_BEFORE_RURI && "".equals(rUriLine); i++)
+				{
+					rUriLine = bufferedReader.readLine();
+					if(rUriLine == null)
+					{
+						log.warn("Connection closed on {} before initial request", socket);
+						return;
+					}
+				}
 			} 
 			catch(SocketTimeoutException ste)
 			{
@@ -67,9 +78,9 @@ public class HttpRuriParser implements SocketRunner
 				socket.close(); //Unable to read. is it http? who knows, just close it.
 				return;
 			}
-			if(Strings.isNullOrEmpty(rUriLine))
+			if("".equals(rUriLine))
 			{
-				log.info("Initial line null or empty for {} request will not be processed", socket);
+				log.info("Initial line empty for {} request will not be processed", socket);
 				socket.close(); //not http, just close it.
 				return;
 			}

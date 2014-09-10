@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import javax.annotation.PreDestroy;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import com.google.common.base.Charsets;
@@ -42,6 +43,10 @@ public class ServerSocketAcceptor implements Runnable
 	@Inject
 	private Supplier<SocketRunner> socketRunnerSupplier;
 	
+	//for testing
+	@Getter
+	private static volatile int numberOfSocketsAccepted = 0;
+	
 	@Override
 	public void run() 
 	{
@@ -51,6 +56,7 @@ public class ServerSocketAcceptor implements Runnable
 			while(running && !serverPool.isShutdown())
 			{
 				Socket s = listeningSocket.accept();
+				numberOfSocketsAccepted++;
 				s.setSoTimeout(10000); //Note: This should probably be an injected config variable, or a system property. Hardcoding for this demo.
 				SocketRunner sr = socketRunnerSupplier.get();
 				sr.setSocket(s);

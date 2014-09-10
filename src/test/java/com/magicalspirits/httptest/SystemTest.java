@@ -2,10 +2,11 @@ package com.magicalspirits.httptest;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.util.List;
@@ -22,10 +23,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.io.CharStreams;
 import com.google.common.io.Resources;
 import com.google.inject.Guice;
+import com.magicalspirits.httptest.acceptor.ServerSocketAcceptor;
 import com.magicalspirits.httptest.httpapplication.ServeHttpFile;
 import com.magicalspirits.httptest.httpparser.HttpRuriParser;
 import com.mycila.guice.ext.closeable.CloseableInjector;
@@ -92,18 +94,22 @@ public class SystemTest
 	
 	@Test(timeout=1000) //1000ms should be plenty. Test takes 0.086 secdonds on my mac. Your results may vary
 	@SneakyThrows
-	public void testOneHundredRequests() //this is almost simultaneous, and is about all the IP stack on my mac can handle without tuning
+	public void testFiftyRequests() //this is almost simultaneous, and is about all the IP stack on my mac can handle without tuning
 	{
+		//Note: The guava utility says to maintain keep alive, and then it closes the socket, so we'll see lots of socket
+		// closed before first request when it returns on the http 1.1 keep alive.
+		final String fromLocal = Resources.toString(Resources.getResource("wwwroot/testfile1.txt"), Charsets.UTF_8);
+
 		List<Callable<Optional<Exception>>> callables = Lists.newArrayList();
 		
-		for(int i = 0; i < 100; i++)
+		for(int i = 0; i < 50; i++)
 		{
 			callables.add(() ->
 			{
 				try
 				{
-					String value = Resources.toString(new URL("http://localhost:" + port + "/testfile1.txt"), Charsets.UTF_8);
-					assertFalse(Strings.isNullOrEmpty(value));
+					String fromServer = Resources.toString(new URL("http://localhost:" + port + "/testfile1.txt"), Charsets.UTF_8);
+					assertEquals(fromLocal, fromServer);
 				}
 				catch(Exception e)
 				{
@@ -125,6 +131,23 @@ public class SystemTest
 			Optional<Exception> result = future.get(10, TimeUnit.SECONDS);
 			if(result.isPresent())
 				throw result.get();
+		}
+	}
+	
+	@Test
+	public void testHttp11KeepAlive() throws IOException
+	{
+		String fromLocal = Resources.toString(Resources.getResource("wwwroot/testfile1.txt"), Charsets.UTF_8);
+
+		int expectedConnections = ServerSocketAcceptor.getNumberOfSocketsAccepted() + 1;
+		
+		for(int i = 0; i < 5; i++)
+		{
+			HttpURLConnection connection = (HttpURLConnection) (new URL("http://localhost:" + port + "/testfile1.txt")).openConnection();
+			String fromServer = CharStreams.toString(new InputStreamReader(connection.getInputStream(), Charsets.UTF_8));
+		
+			assertEquals(fromLocal, fromServer);
+			assertEquals(expectedConnections, ServerSocketAcceptor.getNumberOfSocketsAccepted());
 		}
 	}
 	
