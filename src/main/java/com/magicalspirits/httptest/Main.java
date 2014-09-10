@@ -5,7 +5,6 @@ import java.util.Scanner;
 import lombok.Cleanup;
 
 import com.google.common.base.Strings;
-import com.techblueprints.microservices.restnow.launcher.Service;
 
 public class Main 
 {

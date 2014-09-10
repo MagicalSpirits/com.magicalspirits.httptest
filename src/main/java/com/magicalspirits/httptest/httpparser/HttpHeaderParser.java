@@ -8,6 +8,9 @@ import java.util.function.Supplier;
 
 import lombok.Setter;
 
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
@@ -37,6 +40,9 @@ public class HttpHeaderParser implements SocketRunner
 	private Supplier<ApplicationRunner> applicationRunnerSuppler;
 	
 	@Override
+	@Metered(name="run.meter")
+	@Timed(name="run.timed")
+	@ExceptionMetered(name="run.exceptionmeter")
 	public void run() 
 	{
 		ArrayListMultimap<String, String> httpHeaders = ArrayListMultimap.create();
@@ -60,6 +66,9 @@ public class HttpHeaderParser implements SocketRunner
 		defaultPool.execute(runner);
 	}
 	
+	@Metered(name="parse.meter")
+	@Timed(name="parse.timed")
+	@ExceptionMetered(name="parse.exceptionmeter")
 	private void parseHeader(String header, Multimap<String, String> httpHeaders)
 	{
 		int indexOfColon = header.indexOf(":");

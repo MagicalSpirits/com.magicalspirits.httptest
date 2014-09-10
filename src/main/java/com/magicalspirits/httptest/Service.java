@@ -1,4 +1,4 @@
-package com.techblueprints.microservices.restnow.launcher;
+package com.magicalspirits.httptest;
 
 import java.util.List;
 
@@ -10,9 +10,6 @@ import com.google.common.collect.Lists;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.magicalspirits.httptest.ExecutorsModule;
-import com.magicalspirits.httptest.MainlineModule;
-import com.magicalspirits.httptest.MetricsModule;
 import com.mycila.guice.ext.closeable.CloseableInjector;
 import com.mycila.guice.ext.closeable.CloseableModule;
 import com.mycila.guice.ext.jsr250.Jsr250Module;

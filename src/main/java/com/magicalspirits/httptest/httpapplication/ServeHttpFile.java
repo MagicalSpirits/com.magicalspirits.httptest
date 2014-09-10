@@ -15,6 +15,9 @@ import java.util.function.Supplier;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import com.codahale.metrics.annotation.ExceptionMetered;
+import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.io.ByteStreams;
@@ -55,13 +58,16 @@ public class ServeHttpFile implements ApplicationRunner
 	private PrintStream ps;
 	
 	@Override
+	@Metered(name="run.meter")
+	@Timed(name="run.timed")
+	@ExceptionMetered(name="run.exceptionmeter")
 	public void run() 
 	{
 		try
 		{
 			//NOTE: There are a lot of things we should do here with transfer encoding, 
-			// content encoding, content transfer chunked. My results may not be strictly RFC compliant,
-			// as I'm skipping a bunch of that work for speed of this demo.
+			// content encoding, content transfer chunked. 
+			// I'm going to minimum viable product for this demo, so I'm skipping thse areas.
 	
 			//4096 is generally a good size for data traversing the internet. IF this were local, we might want something bigger.
 			out = new BufferedOutputStream(socket.getOutputStream(), 4096); 
@@ -149,6 +155,9 @@ public class ServeHttpFile implements ApplicationRunner
 		out.flush();
 	}
 
+	@Metered(name="finish.meter")
+	@Timed(name="finish.timed")
+	@ExceptionMetered(name="finish.exceptionmeter")
 	private void finish()
 	{
 		try
@@ -189,6 +198,9 @@ public class ServeHttpFile implements ApplicationRunner
 		}
 	}
 	
+	@Metered(name="responsecode.meter")
+	@Timed(name="responsecode.timed")
+	@ExceptionMetered(name="responsecode.exceptionmeter")
 	private void returnResponseCode(int responseCode, String httpMessage)
 	{
 		if(socket.isClosed())

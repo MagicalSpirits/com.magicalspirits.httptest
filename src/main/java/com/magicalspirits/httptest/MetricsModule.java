@@ -18,13 +18,17 @@ import com.codahale.metrics.jvm.FileDescriptorRatioGauge;
 import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
-import com.palominolabs.metrics.guice.InstrumentationModule;
+import com.palominolabs.metrics.guice.MetricsInstrumentationModule;
 
 @Slf4j
-public class MetricsModule extends InstrumentationModule 
+public class MetricsModule extends MetricsInstrumentationModule 
 {
-	@Override
-	protected MetricRegistry createMetricRegistry()
+	public MetricsModule() 
+	{
+		super(MetricsModule.createMetricRegistry());
+	}
+
+	protected static MetricRegistry createMetricRegistry()
 	{
 		MetricRegistry mr = new MetricRegistry();
 
@@ -48,7 +52,7 @@ public class MetricsModule extends InstrumentationModule
 		return mr;
 	}
 
-	private void registerAll(String prefix, MetricSet ms, MetricRegistry mr) 
+	private static void registerAll(String prefix, MetricSet ms, MetricRegistry mr) 
 	{
 		for (Map.Entry<String, Metric> entry : ms.getMetrics().entrySet()) 
 		{
@@ -65,7 +69,7 @@ public class MetricsModule extends InstrumentationModule
 		} 
 	}
 
-	private void register(String name, Metric m, MetricRegistry mr) 
+	private static void register(String name, Metric m, MetricRegistry mr) 
 	{
 		if (!mr.getMetrics().containsKey(name)) 
 		{ 
