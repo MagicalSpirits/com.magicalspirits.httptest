@@ -3,11 +3,13 @@ package com.magicalspirits.httptest;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import lombok.extern.slf4j.Slf4j;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
@@ -30,6 +32,7 @@ public class MainlineModule extends AbstractModule
 		bind(SocketRunner.class).to(HttpRuriParser.class); //this is the
 		bind(AcceptorService.class).asEagerSingleton();
 		bind(ApplicationRunner.class).to(ServeHttpFile.class);
+		
 	}
 	
 	@Provides
@@ -90,5 +93,19 @@ public class MainlineModule extends AbstractModule
 	public int getShutdownInSeconds()
 	{
 		return 30;
+	}
+	
+	@Provides
+	@Singleton
+	public Map<String, String> getMimeTypeRegistry()
+	{
+		//in a production system we would read this config from a config file and build the map using it.
+		Map<String, String> rv = Maps.newHashMap();
+		rv.put("", "application/octet-stream");
+		rv.put("bin", "application/octet-stream");
+		rv.put("txt", "text/plain");
+		rv.put("htm", "text/html");
+		rv.put("html", "text/html");
+		return rv;
 	}
 }

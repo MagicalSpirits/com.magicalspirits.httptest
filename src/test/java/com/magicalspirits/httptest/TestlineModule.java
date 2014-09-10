@@ -3,12 +3,12 @@ package com.magicalspirits.httptest;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
@@ -21,12 +21,14 @@ import com.magicalspirits.httptest.httpapplication.ApplicationRunner;
 import com.magicalspirits.httptest.httpparser.HttpHeaderParser;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TestlineModule extends AbstractModule 
 {
-	private Class<? extends SocketRunner> socketRunner;
+	private final Class<? extends SocketRunner> socketRunner;
 	
-	private Class<? extends ApplicationRunner> applicationRunner;
+	private final Class<? extends ApplicationRunner> applicationRunner;
+	
+	private MainlineModule mmm = new MainlineModule(); //reference for delegation
 	
 	@Override
 	protected void configure() 
@@ -42,7 +44,7 @@ public class TestlineModule extends AbstractModule
 	@Provides
 	public Supplier<SocketRunner> getSocketRunnerSupplier(final Injector i)
 	{
-		return () -> i.getInstance(SocketRunner.class);
+		return mmm.getSocketRunnerSupplier(i);
 	}
 	
 	/**
@@ -51,7 +53,7 @@ public class TestlineModule extends AbstractModule
 	@Provides
 	public Supplier<HttpHeaderParser> getHeaderParser(final Injector i)
 	{
-		return () -> i.getInstance(HttpHeaderParser.class);
+		return mmm.getHeaderParser(i);
 	}
 	
 	/**
@@ -60,7 +62,7 @@ public class TestlineModule extends AbstractModule
 	@Provides
 	public Supplier<ApplicationRunner> getApplicationRunner(final Injector i)
 	{
-		return () -> i.getInstance(ApplicationRunner.class);
+		return mmm.getApplicationRunner(i);
 	}
 	
 	@Provides
@@ -69,6 +71,8 @@ public class TestlineModule extends AbstractModule
 	{
 		try 
 		{
+			//Note: 0 means any available high port. This is valuable for testing, as it wont conflict
+			// with other services running on the computer building and testing this service.
 			return new ServerSocket(0);
 		} 
 		catch (IOException e) 
@@ -82,7 +86,7 @@ public class TestlineModule extends AbstractModule
 	@Singleton
 	public List<ServerSocketAcceptor> getAcceptors(ServerSocketAcceptor ss1, ServerSocketAcceptor ss2)
 	{
-		return Lists.newArrayList(ss1, ss2);
+		return mmm.getAcceptors(ss1, ss2);
 	}
 	
 	@Provides
@@ -91,5 +95,12 @@ public class TestlineModule extends AbstractModule
 	public int getShutdownInSeconds()
 	{
 		return 1;
+	}
+	
+	@Provides
+	@Singleton
+	public Map<String, String> getMimeTypeRegistry()
+	{
+		return mmm.getMimeTypeRegistry();
 	}
 }

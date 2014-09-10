@@ -27,7 +27,6 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.inject.Guice;
-import com.magicalspirits.httptest.TestAcceptor.SocketAcceptorTestImpl;
 import com.magicalspirits.httptest.httpapplication.ApplicationRunner;
 import com.magicalspirits.httptest.httpparser.HttpRuriData;
 import com.magicalspirits.httptest.httpparser.HttpRuriParser;
