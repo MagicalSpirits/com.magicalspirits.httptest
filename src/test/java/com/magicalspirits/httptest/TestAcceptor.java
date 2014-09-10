@@ -69,7 +69,7 @@ public class TestAcceptor
 		}
 	}
 
-	@Test(timeout=300) //300ms should be plenty. Test takes 0.04 secdonds on my mac. Your results may vary
+	@Test(timeout=300) //300ms should be plenty. Test takes 0.04 seconds on my mac. Your results may vary
 	@SneakyThrows
 	public void testOneHundredAccepts() //this is almost simultaneous, and is about all the IP stack on my mac can handle without tuning
 	{

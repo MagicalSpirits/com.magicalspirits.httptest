@@ -91,7 +91,7 @@ public class TestParser
 		}
 	}
 
-	@Test(timeout=500) //500 should be plenty. Test takes 0.22 secdonds on my mac. Your results may vary
+	@Test(timeout=500) //500 should be plenty. Test takes 0.22 seconds on my mac. Your results may vary
 	@SneakyThrows
 	public void testOneHundredParses() //this is almost simultaneous, and is about all the IP stack on my mac can handle without tuning
 	{

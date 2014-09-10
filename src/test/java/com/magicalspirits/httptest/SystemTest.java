@@ -63,6 +63,13 @@ public class SystemTest
 		assertEquals(fromLocal, fromServer);
 	}
 
+	@Test(timeout=3000) //3000ms should be plenty. Test takes 0.706 seconds on my mac. Your results may vary
+	public void testOneThousandRequestsInSequence() throws IOException
+	{
+		for(int i = 0; i < 1000; i++)
+			testTextData();
+	}
+	
 	@Test
 	public void testBinaryData() throws IOException
 	{
@@ -91,8 +98,7 @@ public class SystemTest
 		assertTrue(fromServer.contains("com.magicalspirits.httptest.httpparser.HttpRuriParser.run.meter"));
 	}
 	
-	
-	@Test(timeout=1000) //1000ms should be plenty. Test takes 0.086 secdonds on my mac. Your results may vary
+	@Test(timeout=1000) //1000ms should be plenty. Test takes 0.086 seconds on my mac. Your results may vary
 	@SneakyThrows
 	public void testFiftyRequests() //this is almost simultaneous, and is about all the IP stack on my mac can handle without tuning
 	{
