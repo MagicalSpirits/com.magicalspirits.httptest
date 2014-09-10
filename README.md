@@ -62,10 +62,9 @@ com.magicalspirits.httptest.3rdparty
   
 All source code contained in this package, except for that in 3rd party, and a couple of small snippits that are noted internally have been written by me. 
 
-
 A couple pieces of code I've borrowed from an open source project of mine https://github.com/TechBlueprints/com.techblueprints.microservices.restnow
 
-This project is a real HTTP JaxRS 2.0 container that I have been working on. If you want real http JaxRS REST micro/macro services you should look there rather than here.
+This project is a real HTTP JaxRS 2.0 container that I have been working on. If you want http JaxRS2.0 REST micro/macro services you should look there rather than here.
 
 
 Apache Software License 2.0:
@@ -81,9 +80,4 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-  
-
-
-
-
 
