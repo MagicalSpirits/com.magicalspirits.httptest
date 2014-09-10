@@ -16,7 +16,10 @@ import com.google.inject.name.Named;
 import com.magicalspirits.httptest.acceptor.AcceptorService;
 import com.magicalspirits.httptest.acceptor.ServerSocketAcceptor;
 import com.magicalspirits.httptest.acceptor.SocketRunner;
-import com.magicalspirits.httptest.acceptor.SocketRunnerImpl;
+import com.magicalspirits.httptest.httpapplication.ApplicationRunner;
+import com.magicalspirits.httptest.httpapplication.ServeHttpFile;
+import com.magicalspirits.httptest.httpparser.HttpHeaderParser;
+import com.magicalspirits.httptest.httpparser.HttpRuriParser;
 
 @Slf4j
 public class MainlineModule extends AbstractModule 
@@ -24,8 +27,9 @@ public class MainlineModule extends AbstractModule
 	@Override
 	protected void configure() 
 	{
-		bind(SocketRunner.class).to(SocketRunnerImpl.class);
+		bind(SocketRunner.class).to(HttpRuriParser.class); //this is the
 		bind(AcceptorService.class).asEagerSingleton();
+		bind(ApplicationRunner.class).to(ServeHttpFile.class);
 	}
 	
 	@Provides
@@ -52,6 +56,24 @@ public class MainlineModule extends AbstractModule
 	public Supplier<SocketRunner> getSocketRunnerSupplier(final Injector i)
 	{
 		return () -> i.getInstance(SocketRunner.class);
+	}
+	
+	/**
+	 * This supplier is guaranteed to always return a new instance.
+	 */
+	@Provides
+	public Supplier<HttpHeaderParser> getHeaderParser(final Injector i)
+	{
+		return () -> i.getInstance(HttpHeaderParser.class);
+	}
+	
+	/**
+	 * This supplier is guaranteed to always return a new instance.
+	 */
+	@Provides
+	public Supplier<ApplicationRunner> getApplicationRunner(final Injector i)
+	{
+		return () -> i.getInstance(ApplicationRunner.class);
 	}
 	
 	@Provides
