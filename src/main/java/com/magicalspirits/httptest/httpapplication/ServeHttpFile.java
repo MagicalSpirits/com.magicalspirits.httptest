@@ -32,9 +32,9 @@ import com.google.common.io.Files;
 import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import com.magicalspirits.httptest.ExecutorsModule;
 import com.magicalspirits.httptest.acceptor.SocketRunner;
 import com.magicalspirits.httptest.httpparser.HttpRuriData;
+import com.magicalspirits.httptest.launcher.ExecutorsModule;
 
 @Slf4j
 public class ServeHttpFile implements ApplicationRunner 
@@ -154,17 +154,18 @@ public class ServeHttpFile implements ApplicationRunner
 			}
 			catch(Exception e)
 			{
-				log.warn("Unable to send 500 after another error", e);
+				log.debug("Unable to send 500 after another error", e);
 			}
 			
-			try 
+			try
 			{
 				socket.close();
-			} 
-			catch (IOException e1) 
-			{
-				log.warn("Unable to close socket", e1);
 			}
+			catch(IOException e2)
+			{
+				log.debug("Unable to close socket inside failure case", e2);
+			}
+
 			throw new RuntimeException(ioe);
 		}
 	}

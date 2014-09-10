@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
@@ -19,6 +20,7 @@ import com.google.inject.Inject;
 import com.magicalspirits.httptest.acceptor.SocketRunner;
 import com.magicalspirits.httptest.httpapplication.ApplicationRunner;
 
+@Slf4j
 public class HttpHeaderParser implements SocketRunner
 {
 	@Inject
@@ -55,6 +57,15 @@ public class HttpHeaderParser implements SocketRunner
 		}
 		catch(IOException ioe)
 		{
+			try
+			{
+				socket.close();
+			}
+			catch(IOException e2)
+			{
+				log.debug("Unable to close socket inside failure case", e2);
+			}
+
 			throw new RuntimeException(ioe);
 		}
 		

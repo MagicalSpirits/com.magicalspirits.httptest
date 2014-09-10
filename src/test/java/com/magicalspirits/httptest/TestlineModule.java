@@ -18,6 +18,7 @@ import com.magicalspirits.httptest.acceptor.ServerSocketAcceptor;
 import com.magicalspirits.httptest.acceptor.SocketRunner;
 import com.magicalspirits.httptest.httpapplication.ApplicationRunner;
 import com.magicalspirits.httptest.httpparser.HttpHeaderParser;
+import com.magicalspirits.httptest.launcher.MainlineModule;
 
 @Slf4j
 @RequiredArgsConstructor

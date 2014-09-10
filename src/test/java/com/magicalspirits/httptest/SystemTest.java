@@ -4,6 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -30,6 +31,8 @@ import com.google.inject.Guice;
 import com.magicalspirits.httptest.acceptor.ServerSocketAcceptor;
 import com.magicalspirits.httptest.httpapplication.ServeHttpFile;
 import com.magicalspirits.httptest.httpparser.HttpRuriParser;
+import com.magicalspirits.httptest.launcher.ExecutorsModule;
+import com.magicalspirits.httptest.metricsmonitoring.MetricsModule;
 import com.mycila.guice.ext.closeable.CloseableInjector;
 import com.mycila.guice.ext.closeable.CloseableModule;
 import com.mycila.guice.ext.jsr250.Jsr250Module;
@@ -156,6 +159,15 @@ public class SystemTest
 			assertEquals(expectedConnections, ServerSocketAcceptor.getNumberOfSocketsAccepted());
 		}
 	}
+
+	@Test(expected=FileNotFoundException.class)
+	public void test404() throws IOException
+	{
+		HttpURLConnection connection = (HttpURLConnection) (new URL("http://localhost:" + port + "/nosuchfile.txt")).openConnection();
+		assertEquals(404, connection.getResponseCode());
+		CharStreams.toString(new InputStreamReader(connection.getInputStream(), Charsets.UTF_8));
+	}
+
 	
 	@AfterClass
 	public static void shutdown()

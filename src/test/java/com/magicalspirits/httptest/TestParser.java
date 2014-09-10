@@ -30,6 +30,8 @@ import com.google.inject.Guice;
 import com.magicalspirits.httptest.httpapplication.ApplicationRunner;
 import com.magicalspirits.httptest.httpparser.HttpRuriData;
 import com.magicalspirits.httptest.httpparser.HttpRuriParser;
+import com.magicalspirits.httptest.launcher.ExecutorsModule;
+import com.magicalspirits.httptest.metricsmonitoring.MetricsModule;
 import com.mycila.guice.ext.closeable.CloseableInjector;
 import com.mycila.guice.ext.closeable.CloseableModule;
 import com.mycila.guice.ext.jsr250.Jsr250Module;

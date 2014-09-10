@@ -1,4 +1,4 @@
-package com.magicalspirits.httptest;
+package com.magicalspirits.httptest.launcher;
 
 import java.io.IOException;
 import java.net.ServerSocket;

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import com.magicalspirits.httptest.ExecutorsModule;
+import com.magicalspirits.httptest.launcher.ExecutorsModule;
 
 @AllArgsConstructor 
 @NoArgsConstructor

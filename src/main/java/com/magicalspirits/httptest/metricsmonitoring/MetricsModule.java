@@ -1,4 +1,4 @@
-package com.magicalspirits.httptest;
+package com.magicalspirits.httptest.metricsmonitoring;
 
 import java.lang.management.ManagementFactory;
 import java.util.Map;

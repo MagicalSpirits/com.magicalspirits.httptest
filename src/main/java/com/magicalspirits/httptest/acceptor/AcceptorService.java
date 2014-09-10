@@ -7,7 +7,7 @@ import javax.annotation.PostConstruct;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import com.magicalspirits.httptest.ExecutorsModule;
+import com.magicalspirits.httptest.launcher.ExecutorsModule;
 
 public class AcceptorService 
 {

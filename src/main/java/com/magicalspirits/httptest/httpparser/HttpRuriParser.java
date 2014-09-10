@@ -19,8 +19,8 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import com.magicalspirits.httptest.ExecutorsModule;
 import com.magicalspirits.httptest.acceptor.SocketRunner;
+import com.magicalspirits.httptest.launcher.ExecutorsModule;
 
 @Slf4j
 public class HttpRuriParser implements SocketRunner
@@ -113,6 +113,14 @@ public class HttpRuriParser implements SocketRunner
 		}
 		catch(IOException e)
 		{
+			try
+			{
+				socket.close();
+			}
+			catch(IOException e2)
+			{
+				log.debug("Unable to close socket inside failure case", e2);
+			}
 			throw new RuntimeException(e); // unable to close socket.
 		}
 	}

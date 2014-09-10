@@ -28,6 +28,8 @@ import com.google.common.collect.Lists;
 import com.google.inject.Guice;
 import com.magicalspirits.httptest.acceptor.SocketRunner;
 import com.magicalspirits.httptest.httpapplication.ServeHttpFile;
+import com.magicalspirits.httptest.launcher.ExecutorsModule;
+import com.magicalspirits.httptest.metricsmonitoring.MetricsModule;
 import com.mycila.guice.ext.closeable.CloseableInjector;
 import com.mycila.guice.ext.closeable.CloseableModule;
 import com.mycila.guice.ext.jsr250.Jsr250Module;

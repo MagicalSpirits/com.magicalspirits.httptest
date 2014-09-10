@@ -1,4 +1,4 @@
-package com.magicalspirits.httptest;
+package com.magicalspirits.httptest.launcher;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 
