@@ -66,9 +66,9 @@ Some areas for future development:
 ----------------------------------
 * There is some technical debt in how I created the pipeline where it passes a buffered reader around. This will prevent any future work where the server might accept PUT requests of binary data.
 * Wrapping the contents as a servlet container would give a great deal more flexibility.
-* Alternatively, the ServeHttpFile portion of the system could be a list of ApplicationRunners allowing each one to run and determine if it want's to servie the request. The current method of adding more code to ServeHttpFile isn't very extensible.
+* Alternatively, the ServeHttpFile portion of the system could be a list of ApplicationRunners allowing each one to run and determine if it want's to serve the request. The current method of adding more code to ServeHttpFile isn't very extensible.
 * Some scripts to really show the speed using Apache Bench would be ideal. The unit tests show some, but it could be better.
-
+* If this were to turn into more of an API based service, I would javadoc at the minimum the public APIs. As a server with an MVP, I opted to skip detailed Javadoc on the methods.
   
 All source code contained in this package, except for that in 3rd party, and a couple of small snippits that are noted internally have been written by me. 
 
