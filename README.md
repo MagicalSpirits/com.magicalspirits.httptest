@@ -34,6 +34,7 @@ Use dependency injection (Guice) to enable portions to be swapped in potential d
 Provide metrics and monitoring (Codahale) so that this service could be used in a production capacity.
 Provide high throughput request processing. On my macbook, I can execute 1000 requests in less than a second.
 Provide robust unit testing.
+Provide a minimum viable product http server.
 
 
 Package structure:
@@ -58,6 +59,20 @@ A couple pieces of code I've borrowed from an open source project of mine https:
 
 This project is a real HTTP JaxRS 2.0 container that I have been working on. If you want real http JaxRS REST micro/macro services you should look there rather than here.
 
+
+Apache Software License 2.0:
+-----------------------------------------------------------------------------
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
   
 
 
