@@ -49,12 +49,18 @@ High level goals of this project:
 
 Package structure:
 ---------------------------------
-* com.magicalspirits.httptest.acceptor: Contains the components that handle receiving the server socket, accepting connections from it, and handing them off to the next layer
-* com.magicalspirits.httptest.httpapplication: Contains the components that process the completely parsed http request and provide a response to the client.
-* com.magicalspirits.httptest.httpparser: Contains the components that parse the http request line and headers, and hands them off to the application layer.
-* com.magicalspirits.httptest.launcher: Contains the components that start the application such as Main, Service, guice modules, and the default uncaught exception handler.
-* com.magicalspirits.httptest.metricsmonitoring: Contains the Guice binding to Codahale for metrics and monitoring.
-* com.magicalspirits.httptest.3rdparty: Contains a component presently not in the production release of Codahale that allows me to instrument an ExecutorService for metrics and monitoring. This component is from the next codahale release and isn't mine or written by me.
+* com.magicalspirits.httptest.acceptor
+  * Contains the components that handle receiving the server socket, accepting connections from it, and handing them off to the next layer
+* com.magicalspirits.httptest.httpapplication
+  * Contains the components that process the completely parsed http request and provide a response to the client.
+* com.magicalspirits.httptest.httpparser
+  * Contains the components that parse the http request line and headers, and hands them off to the application layer.
+* com.magicalspirits.httptest.launcher
+  * Contains the components that start the application such as Main, Service, guice modules, and the default uncaught exception handler.
+* com.magicalspirits.httptest.metricsmonitoring
+  * Contains the Guice binding to Codahale for metrics and monitoring.
+* com.magicalspirits.httptest.3rdparty
+  * Contains a component presently not in the production release of Codahale that allows me to instrument an ExecutorService for metrics and monitoring. This component is from the next codahale release and isn't mine or written by me.
   
 All source code contained in this package, except for that in 3rd party, and a couple of small snippits that are noted internally have been written by me. 
 
