@@ -24,7 +24,10 @@ public class ServerSocketAcceptor implements Runnable
 	public void stop()
 	{
 		running = false;
+		executing.interrupt();
 	}
+	
+	private Thread executing;
 	
 	@Inject
 	private ServerSocket listeningSocket;
@@ -39,6 +42,7 @@ public class ServerSocketAcceptor implements Runnable
 	@Override
 	public void run() 
 	{
+		this.executing = Thread.currentThread();
 		try
 		{
 			while(running)
