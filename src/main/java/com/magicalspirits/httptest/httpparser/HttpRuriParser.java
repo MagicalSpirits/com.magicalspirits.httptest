@@ -57,7 +57,7 @@ public class HttpRuriParser implements SocketRunner
 			} 
 			catch(SocketTimeoutException ste)
 			{
-				log.warn("Timeout reading ruri line for {}", socket);
+				timeout();
 				socket.close();
 				return;
 			}
@@ -106,4 +106,10 @@ public class HttpRuriParser implements SocketRunner
 		}
 	}
 
+	@Metered
+	protected void timeout()
+	{
+		//Spearate method to take advantage of a meter on this method
+		log.warn("Timeout reading ruri line for {}", socket);
+	}
 }
